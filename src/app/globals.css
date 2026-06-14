@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════
+   TURISMO DABAR — Línea Gráfica Oficial
+   Paleta extraída del logotipo del cliente.
+   ═══════════════════════════════════════════════════════════ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbfaf7; /* Arena cálida — papel de bitácora de viajes */
+  --foreground: #1c1917; /* Stone 900 — texto oscuro cálido */
 }
 
 @theme inline {
@@ -10,17 +15,139 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-outfit);
+
+  /* ── Primary Blue (Confianza · Estabilidad) ────────────── */
+  --color-brand-blue-50:  #eff6ff;
+  --color-brand-blue-100: #dbeafe;
+  --color-brand-blue-200: #bfdbfe;
+  --color-brand-blue-300: #7fb5f5;
+  --color-brand-blue-400: #4a90d9;
+  --color-brand-blue-500: #1e6fbf;
+  --color-brand-blue-600: #1a5ba0;
+  --color-brand-blue-700: #164b83;
+  --color-brand-blue-800: #0f3460;
+  --color-brand-blue-900: #0b2545;
+  --color-brand-blue-950: #071a30;
+
+  /* ── Accent Terracota (Calidez · Aventura · Conversión) ── */
+  --color-brand-coral-50:  #faf6f4;
+  --color-brand-coral-100: #f0ddd7;
+  --color-brand-coral-200: #e2bdb2;
+  --color-brand-coral-300: #cf9683;
+  --color-brand-coral-400: #bc7560;
+  --color-brand-coral-500: #b15c47;
+  --color-brand-coral-600: #9a4d3a;
+  --color-brand-coral-700: #804030;
+  --color-brand-coral-800: #6a3628;
+  --color-brand-coral-900: #582e22;
+  --color-brand-coral-950: #311812;
+
+  /* ── Secondary Yellow (Calidez · Turismo) ──────────────── */
+  --color-brand-sun-50:  #fffbeb;
+  --color-brand-sun-100: #fef3c7;
+  --color-brand-sun-200: #fde68a;
+  --color-brand-sun-300: #fcd34d;
+  --color-brand-sun-400: #fbbf24;
+  --color-brand-sun-500: #f59e0b;
+  --color-brand-sun-600: #d97706;
+  --color-brand-sun-700: #b45309;
+  --color-brand-sun-800: #92400e;
+  --color-brand-sun-900: #78350f;
+  --color-brand-sun-950: #451a03;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 body {
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Evitar scroll horizontal accidental global */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ── Animaciones de fondo — bitácora viva ── */
+@keyframes route-flow {
+  to {
+    stroke-dashoffset: -120;
+  }
+}
+
+@keyframes route-flow-reverse {
+  to {
+    stroke-dashoffset: 120;
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes gradient-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(2%, -1%) scale(1.03);
+  }
+}
+
+.animate-route-flow {
+  animation: route-flow 22s linear infinite;
+}
+
+.animate-route-flow-reverse {
+  animation: route-flow-reverse 28s linear infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 4s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.animate-gradient-drift {
+  animation: gradient-drift 18s ease-in-out infinite;
+}
+
+@keyframes contour-breathe {
+  0%,
+  100% {
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 0.28;
+  }
+}
+
+.animate-contour-breathe {
+  animation: contour-breathe 6s ease-in-out infinite;
 }
