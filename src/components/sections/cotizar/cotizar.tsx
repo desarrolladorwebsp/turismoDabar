@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, type FormEvent } from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   PaperPlaneTilt,
   FirstAidKit,
@@ -24,7 +23,7 @@ import {
 } from "@/lib/quote";
 import { organicSpring, fadeUpItem } from "@/lib/motion";
 import { SectionBackdrop } from "@/components/ui/section-backdrop";
-import { QuoteSuccessModal } from "@/components/sections/cotizar/quote-success-modal";
+import { QuoteSuccessPortal } from "@/components/sections/cotizar/quote-success-portal";
 
 const TRUST_POINTS = [
   {
@@ -171,6 +170,9 @@ export function Cotizar() {
 
     if (form.priorities.length === 0) {
       setPrioritiesError(true);
+      document
+        .getElementById("quote-priorities")
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
@@ -398,7 +400,7 @@ export function Cotizar() {
                     </select>
                   </FormField>
 
-                  <div className="sm:col-span-2">
+                  <div id="quote-priorities" className="sm:col-span-2">
                     <p className={labelClassName}>
                       ¿Qué es lo más importante?{" "}
                       <span className="text-brand-coral-600">*</span>
@@ -479,14 +481,10 @@ export function Cotizar() {
         </div>
       </section>
 
-      <AnimatePresence>
-        {showSuccess &&
-          typeof document !== "undefined" &&
-          createPortal(
-            <QuoteSuccessModal onClose={() => setShowSuccess(false)} />,
-            document.body
-          )}
-      </AnimatePresence>
+      <QuoteSuccessPortal
+        open={showSuccess}
+        onClose={() => setShowSuccess(false)}
+      />
     </>
   );
 }
