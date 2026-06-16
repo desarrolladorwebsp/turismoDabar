@@ -16,6 +16,7 @@ import {
   CONTACT_EMAIL,
   SOCIAL_LINKS,
 } from "@/lib/contact";
+import { scrollToCotizar } from "@/lib/quote";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -94,7 +95,14 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#cotizar" className="text-brand-blue-300 transition-colors hover:text-brand-sun-400">
+                <a
+                  href="#cotizar"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    scrollToCotizar();
+                  }}
+                  className="text-brand-blue-300 transition-colors hover:text-brand-sun-400"
+                >
                   Cotizar
                 </a>
               </li>

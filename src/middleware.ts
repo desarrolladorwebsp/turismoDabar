@@ -10,7 +10,7 @@ const ALLOWED_EXACT = new Set([
   "/apple-icon.png",
 ]);
 
-const ALLOWED_PREFIXES = ["/_next", "/images", "/api"];
+const ALLOWED_PREFIXES = ["/_next", "/images", "/videos", "/api"];
 
 function isAllowedPath(pathname: string) {
   if (ALLOWED_EXACT.has(pathname)) return true;
@@ -34,6 +34,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|txt|xml|woff2?)$).*)",
+    "/((?!_next/static|_next/image|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|txt|xml|woff2?|mp4|mov|webm)$).*)",
   ],
 };

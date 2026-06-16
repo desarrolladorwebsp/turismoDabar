@@ -16,36 +16,57 @@ export const STUDENT_COUNT_OPTIONS = [
 
 export type StudentCountOption = (typeof STUDENT_COUNT_OPTIONS)[number];
 
-export const TRAVEL_YEAR_OPTIONS = ["2026", "2027", "Aún no definida"] as const;
+export const TRAVEL_YEAR_OPTIONS = [
+  "2026",
+  "2027",
+  "2028",
+  "Aún no definida",
+] as const;
 
 export type TravelYearOption = (typeof TRAVEL_YEAR_OPTIONS)[number];
 
-export const PRIORITY_OPTIONS = [
-  "Seguridad",
-  "Actividades y aventura",
-  "Todo incluido",
-  "Precio",
-  "Hotelería",
-  "Experiencia premium",
-] as const;
-
-export type PriorityOption = (typeof PRIORITY_OPTIONS)[number];
-
 export const COTIZAR_SCROLL_EVENT = "turismodabar:cotizar-scroll";
+export const COTIZAR_FORM_ID = "cotizar-form";
+export const COTIZAR_SECTION_ID = "cotizar";
 
 export interface CotizarScrollDetail {
   destination?: QuoteDestination;
 }
 
-/** Scroll suave al formulario + pre-selección opcional de destino */
+function scrollToQuoteForm() {
+  const formEl = document.getElementById(COTIZAR_FORM_ID);
+  const sectionEl = document.getElementById(COTIZAR_SECTION_ID);
+  const target = formEl ?? sectionEl;
+
+  if (!target) return;
+
+  target.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+    inline: "nearest",
+  });
+
+  window.history.replaceState(null, "", `#${COTIZAR_SECTION_ID}`);
+}
+
+/** Scroll suave al formulario centrado + pre-selección opcional de destino */
 export function scrollToCotizar(destination?: QuoteDestination) {
   if (typeof window !== "undefined") {
     window.dispatchEvent(
       new CustomEvent<CotizarScrollDetail>(COTIZAR_SCROLL_EVENT, {
         detail: { destination },
-      })
+      }),
     );
   }
 
-  document.getElementById("cotizar")?.scrollIntoView({ behavior: "smooth" });
+  scrollToQuoteForm();
+}
+
+/** Maneja enlaces hash #cotizar al cargar la página */
+export function handleCotizarHashOnLoad() {
+  if (typeof window === "undefined") return;
+
+  if (window.location.hash === `#${COTIZAR_SECTION_ID}`) {
+    window.setTimeout(() => scrollToQuoteForm(), 350);
+  }
 }

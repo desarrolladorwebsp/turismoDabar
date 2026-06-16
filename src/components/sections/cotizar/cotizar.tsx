@@ -13,12 +13,12 @@ import {
   QUOTE_DESTINATIONS,
   STUDENT_COUNT_OPTIONS,
   TRAVEL_YEAR_OPTIONS,
-  PRIORITY_OPTIONS,
   COTIZAR_SCROLL_EVENT,
+  COTIZAR_FORM_ID,
+  handleCotizarHashOnLoad,
   type QuoteDestination,
   type StudentCountOption,
   type TravelYearOption,
-  type PriorityOption,
   type CotizarScrollDetail,
 } from "@/lib/quote";
 import { organicSpring, fadeUpItem } from "@/lib/motion";
@@ -49,7 +49,6 @@ interface QuoteFormData {
   studentCount: StudentCountOption | "";
   destination: QuoteDestination | "";
   travelYear: TravelYearOption | "";
-  priorities: PriorityOption[];
 }
 
 const INITIAL_FORM: QuoteFormData = {
@@ -61,7 +60,6 @@ const INITIAL_FORM: QuoteFormData = {
   studentCount: "",
   destination: "",
   travelYear: "",
-  priorities: [],
 };
 
 const inputClassName =
@@ -132,7 +130,11 @@ export function Cotizar() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [highlightDestination, setHighlightDestination] = useState(false);
-  const [prioritiesError, setPrioritiesError] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  useEffect(() => {
+    handleCotizarHashOnLoad();
+  }, []);
 
   useEffect(() => {
     const handler = (event: Event) => {
@@ -155,36 +157,39 @@ export function Cotizar() {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const togglePriority = (priority: PriorityOption) => {
-    setPrioritiesError(false);
-    setForm((prev) => ({
-      ...prev,
-      priorities: prev.priorities.includes(priority)
-        ? prev.priorities.filter((item) => item !== priority)
-        : [...prev.priorities, priority],
-    }));
-  };
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (form.priorities.length === 0) {
-      setPrioritiesError(true);
-      document
-        .getElementById("quote-priorities")
-        ?.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
-
     setIsSubmitting(true);
+    setSubmitError(null);
 
-    // Simula envío al backend — reemplazar con API real cuando exista
-    await new Promise((resolve) => setTimeout(resolve, 1400));
+    try {
+      const response = await fetch("/api/cotizar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    setIsSubmitting(false);
-    setShowSuccess(true);
-    setForm(INITIAL_FORM);
-    setPrioritiesError(false);
+      const result = (await response.json()) as { error?: string };
+
+      if (!response.ok) {
+        throw new Error(
+          result.error ||
+            "No pudimos enviar tu solicitud. Intenta nuevamente o escríbenos por WhatsApp."
+        );
+      }
+
+      setShowSuccess(true);
+      setForm(INITIAL_FORM);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "No pudimos enviar tu solicitud. Intenta nuevamente."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -221,11 +226,12 @@ export function Cotizar() {
             <TrustPanel />
 
             <motion.div
+              id={COTIZAR_FORM_ID}
               variants={fadeUpItem}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-40px" }}
-              className="rounded-2xl border border-slate-900/10 bg-white p-5 sm:p-7 md:p-8"
+              className="scroll-mt-28 rounded-2xl border border-slate-900/10 bg-white p-5 sm:p-7 md:p-8"
             >
               <form
                 onSubmit={handleSubmit}
@@ -399,53 +405,17 @@ export function Cotizar() {
                       ))}
                     </select>
                   </FormField>
-
-                  <div id="quote-priorities" className="sm:col-span-2">
-                    <p className={labelClassName}>
-                      ¿Qué es lo más importante?{" "}
-                      <span className="text-brand-coral-600">*</span>
-                    </p>
-                    <fieldset className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      <legend className="sr-only">
-                        ¿Qué es lo más importante?
-                      </legend>
-                      {PRIORITY_OPTIONS.map((priority) => {
-                        const checked = form.priorities.includes(priority);
-                        return (
-                          <label
-                            key={priority}
-                            className={cn(
-                              "flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-sm transition-colors",
-                              checked
-                                ? "border-brand-coral-300 bg-brand-coral-50 text-stone-900"
-                                : "border-stone-200 bg-white text-stone-700 hover:border-stone-300",
-                              prioritiesError &&
-                                !checked &&
-                                "border-brand-coral-200"
-                            )}
-                          >
-                            <input
-                              type="checkbox"
-                              name="priorities"
-                              value={priority}
-                              checked={checked}
-                              onChange={() => togglePriority(priority)}
-                              className="h-4 w-4 rounded accent-brand-coral-500"
-                            />
-                            {priority}
-                          </label>
-                        );
-                      })}
-                    </fieldset>
-                    {prioritiesError && (
-                      <p className="mt-2 text-xs text-brand-coral-600">
-                        Selecciona al menos una opción.
-                      </p>
-                    )}
-                  </div>
                 </div>
 
                 <div className="mt-2 flex flex-col items-center gap-3 border-t border-stone-200 pt-6">
+                  {submitError && (
+                    <p
+                      role="alert"
+                      className="w-full rounded-xl border border-brand-coral-200 bg-brand-coral-50 px-4 py-3 text-center text-sm text-brand-coral-700"
+                    >
+                      {submitError}
+                    </p>
+                  )}
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}

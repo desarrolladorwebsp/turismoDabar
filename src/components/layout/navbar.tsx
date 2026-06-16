@@ -20,6 +20,25 @@ const NAV_ITEMS = [
   { label: "Cotizar", href: "#cotizar" },
 ] as const;
 
+function handleNavItemClick(
+  href: string,
+  onNavigate?: () => void
+) {
+  return (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (href === "#cotizar") {
+      event.preventDefault();
+      onNavigate?.();
+      scrollToCotizar();
+    } else if (href === "#") {
+      event.preventDefault();
+      onNavigate?.();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      onNavigate?.();
+    }
+  };
+}
+
 const SCROLL_THRESHOLD = 8;
 
 /** Interpolación lineal para transiciones de color en scroll */
@@ -242,7 +261,12 @@ export function Navbar() {
         {/* Navegación Desktop */}
         <div className="hidden items-center gap-8 md:flex lg:gap-10">
           {NAV_ITEMS.map((item) => (
-            <a key={item.label} href={item.href} className={linkClassName}>
+            <a
+              key={item.label}
+              href={item.href}
+              onClick={handleNavItemClick(item.href)}
+              className={linkClassName}
+            >
               {item.label}
             </a>
           ))}
@@ -373,7 +397,7 @@ export function Navbar() {
                   <motion.div key={item.label} variants={navLinkVariants}>
                     <a
                       href={item.href}
-                      onClick={() => setIsOpen(false)}
+                      onClick={handleNavItemClick(item.href, () => setIsOpen(false))}
                       className="block border-b border-stone-200/80 pb-3 text-2xl font-bold text-stone-800 transition-colors duration-200 hover:text-brand-blue-700"
                     >
                       {item.label}
