@@ -10,6 +10,10 @@ import { organicSpring, staggerContainer, fadeUpItem } from "@/lib/motion";
 
 const IMAGES = [
   {
+    src: "/images/hero/grupo-gira-playa.jpg",
+    alt: "Grupo de estudiantes en gira de estudio posando en playa de arena volcánica con lago y montañas al fondo",
+  },
+  {
     src: "/images/hero/rafting-rapidos.jpg",
     alt: "Grupo de estudiantes haciendo rafting en rápidos con cascadas y equipo de seguridad",
   },

@@ -48,10 +48,10 @@ export const OG_IMAGE_WIDTH = 1200;
 export const OG_IMAGE_HEIGHT = 630;
 
 export const OFFICE_ADDRESS = {
-  streetAddress: "Av. Providencia 1234, Oficina 401",
-  addressLocality: "Santiago",
+  streetAddress: "Las Golondrinas 376",
+  addressLocality: "Macul",
   addressRegion: "Región Metropolitana",
-  postalCode: "7500000",
+  postalCode: "7810000",
   addressCountry: "CL",
 } as const;
 

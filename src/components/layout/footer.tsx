@@ -183,9 +183,9 @@ export function Footer() {
                 <div className="flex flex-col">
                   <span className="text-xs text-brand-blue-400">Dirección</span>
                   <span className="text-brand-blue-100">
-                    Av. Providencia 1234, Oficina 401
+                    Las Golondrinas 376
                     <br />
-                    Santiago, Chile
+                    Macul, Santiago, Chile
                   </span>
                 </div>
               </li>
