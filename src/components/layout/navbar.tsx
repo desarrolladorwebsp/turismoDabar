@@ -15,7 +15,7 @@ import { scrollToCotizar } from "@/lib/quote";
 
 const NAV_ITEMS = [
   { label: "Inicio", href: "#" },
-  { label: "Servicios", href: "#servicios" },
+  { label: "Planes", href: "/planes" },
   { label: "Experiencias", href: "#experiencias" },
   { label: "Cotizar", href: "#cotizar" },
 ] as const;

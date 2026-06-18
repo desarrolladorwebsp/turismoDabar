@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   FirstAidKit,
@@ -9,7 +10,8 @@ import {
   MapPin,
   ArrowRight,
 } from "@phosphor-icons/react";
-import { scrollToCotizar, type QuoteDestination } from "@/lib/quote";
+import { scrollToCotizar } from "@/lib/quote";
+import { TRAVEL_PRODUCTS, type TravelProduct } from "@/lib/travel-products";
 import {
   organicSpring,
   staggerContainer,
@@ -21,102 +23,6 @@ import {
   type DestinationRegion,
 } from "@/components/ui/destination-flag-badge";
 import { TripHighlights } from "@/components/sections/servicios/trip-highlights";
-
-interface Product {
-  title: string;
-  image: string;
-  imageAlt: string;
-  region: DestinationRegion;
-  destinations: string[];
-  description: string;
-  highlights: string[];
-  price: string;
-  formDestination: QuoteDestination;
-}
-
-const PRODUCTS: Product[] = [
-  {
-    title: "Gira Sur de Chile: Ruta Siete Lagos",
-    image: "/images/servicios/sur-chile-premium.png",
-    imageAlt:
-      "Paisaje del Sur de Chile con lagos, bosques nativos y volcanes en la Ruta Siete Lagos",
-    region: "chile",
-    destinations: ["Licanray", "Huilo Huilo", "Coñaripe", "Villarrica"],
-    description:
-      "Una inmersión total en la naturaleza patagónica. La combinación perfecta de termas, bosques y adrenalina, diseñada para cursos que buscan un viaje de alta categoría optimizando el presupuesto.",
-    highlights: [
-      "Rafting en río",
-      "Parque acuático",
-      "Termas de Coñaripe",
-      "Cobertura Médica Completa",
-      "Soporte 24/7",
-    ],
-    price: "Desde $529.990 por persona.",
-    formDestination:
-      "Sur de Chile: Siete Lagos (Licanray / Huilo Huilo / Coñaripe / Villarrica)",
-  },
-  {
-    title: "Gira Sur de Chile: Tradición y Aventura",
-    image: "/images/servicios/sur-chile-experiencia.png",
-    imageAlt:
-      "Puerto Varas con el volcán Osorno reflejado en el lago Llanquihue al atardecer",
-    region: "chile",
-    destinations: ["Puerto Varas", "Frutillar", "Osorno", "Valdivia"],
-    description:
-      "Recorre las postales más icónicas del sur de Chile. Desde la magia de Valdivia hasta los paisajes coloniales de Frutillar y Puerto Varas, combinando cultura con actividades extremas.",
-    highlights: [
-      "Rafting incluido",
-      "Navegación",
-      "Tours culturales",
-      "Cobertura Médica Completa",
-      "Soporte 24/7",
-    ],
-    price: "Desde $629.990 por persona.",
-    formDestination:
-      "Sur de Chile: Lagos y Volcanes (Puerto Varas / Valdivia / Frutillar / Osorno)",
-  },
-  {
-    title: "Gira Bariloche Terrestre: Aventura sobre Ruedas",
-    image: "/images/servicios/bariloche-premium.png",
-    imageAlt:
-      "San Carlos de Bariloche con el lago Nahuel Huapi y la Cordillera de los Andes",
-    region: "argentina",
-    destinations: ["San Carlos de Bariloche, Argentina"],
-    description:
-      "Cruza la Cordillera de los Andes en nuestros buses de última generación. Vivirás la mítica experiencia de Bariloche con todo resuelto desde que sales de Santiago: comidas en ruta, excursiones y las mejores discotecas.",
-    highlights: [
-      "Rafting",
-      "Canopy en Cerro López",
-      "Cabalgata",
-      "Bar de hielo",
-      "Fiestas nocturnas",
-      "Cobertura Médica",
-      "Soporte 24/7",
-    ],
-    price: "Desde $1.195.990 por persona.",
-    formDestination: "Bariloche Terrestre (Bus exclusivo)",
-  },
-  {
-    title: "Gira Bariloche Aéreo: Experiencia Premium",
-    image: "/images/servicios/bariloche-premium.png",
-    imageAlt:
-      "Vista aérea de Bariloche con el lago Nahuel Huapi y los Andes nevados",
-    region: "argentina",
-    destinations: ["San Carlos de Bariloche, Argentina"],
-    description:
-      "La opción más rápida, cómoda y exclusiva para tu curso. Evita las horas de carretera y llega directo a disfrutar de Bariloche con el paquete de aventura más completo y seguro del mercado.",
-    highlights: [
-      "Vuelos ida y vuelta",
-      "Rafting",
-      "Canopy",
-      "Discotecas con traslados incluidos",
-      "Cobertura Médica Internacional",
-      "Soporte 24/7",
-    ],
-    price: "Desde $1.595.990 por persona.",
-    formDestination: "Bariloche Aéreo (Avión)",
-  },
-];
 
 const TRUST_BADGES = [
   {
@@ -153,7 +59,7 @@ function ProductCard({
   product,
   index,
 }: {
-  product: Product;
+  product: TravelProduct;
   index: number;
 }) {
   return (
@@ -184,7 +90,12 @@ function ProductCard({
 
       <div className="flex flex-1 flex-col gap-4 px-5 pb-5 pt-6 sm:pt-7">
         <h3 className="pr-16 text-lg font-bold leading-snug tracking-tight text-stone-900 sm:pr-20">
-          {product.title}
+          <Link
+            href={`/planes/${product.slug}`}
+            className="transition-colors hover:text-brand-blue-700"
+          >
+            {product.title}
+          </Link>
         </h3>
 
         <div className="flex flex-wrap gap-1.5">
@@ -206,7 +117,7 @@ function ProductCard({
         <TripHighlights items={product.highlights} />
 
         <p className="text-sm font-bold tracking-tight text-brand-blue-700">
-          {product.price}
+          {product.priceLabel}
         </p>
 
         <div className="flex-1" />
@@ -309,8 +220,8 @@ export function Servicios() {
           viewport={{ once: true, margin: "-40px" }}
           className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6"
         >
-          {PRODUCTS.map((product, index) => (
-            <ProductCard key={product.title} product={product} index={index} />
+          {TRAVEL_PRODUCTS.map((product, index) => (
+            <ProductCard key={product.slug} product={product} index={index} />
           ))}
         </motion.div>
 

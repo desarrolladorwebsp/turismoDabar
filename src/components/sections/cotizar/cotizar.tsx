@@ -10,11 +10,12 @@ import {
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import {
+  COTIZAR_SCROLL_EVENT,
+  COTIZAR_FORM_ID,
+  COTIZAR_DEST_PARAM,
   QUOTE_DESTINATIONS,
   STUDENT_COUNT_OPTIONS,
   TRAVEL_YEAR_OPTIONS,
-  COTIZAR_SCROLL_EVENT,
-  COTIZAR_FORM_ID,
   handleCotizarHashOnLoad,
   type QuoteDestination,
   type StudentCountOption,
@@ -23,6 +24,7 @@ import {
 } from "@/lib/quote";
 import { organicSpring, fadeUpItem } from "@/lib/motion";
 import { SectionBackdrop } from "@/components/ui/section-backdrop";
+import { SernaturBadge } from "@/components/ui/sernatur-badge";
 import { QuoteSuccessPortal } from "@/components/sections/cotizar/quote-success-portal";
 
 const TRUST_POINTS = [
@@ -121,6 +123,10 @@ function TrustPanel() {
         coordinadores. Respondemos en horario comercial y priorizamos grupos con
         fechas definidas.
       </p>
+
+      <div className="mt-6 border-t border-stone-200 pt-5">
+        <SernaturBadge variant="panel" />
+      </div>
     </motion.aside>
   );
 }
@@ -134,6 +140,21 @@ export function Cotizar() {
 
   useEffect(() => {
     handleCotizarHashOnLoad();
+
+    const params = new URLSearchParams(window.location.search);
+    const destination = params.get(COTIZAR_DEST_PARAM);
+
+    if (
+      destination &&
+      QUOTE_DESTINATIONS.includes(destination as QuoteDestination)
+    ) {
+      setForm((prev) => ({
+        ...prev,
+        destination: destination as QuoteDestination,
+      }));
+      setHighlightDestination(true);
+      window.setTimeout(() => setHighlightDestination(false), 2200);
+    }
   }, []);
 
   useEffect(() => {

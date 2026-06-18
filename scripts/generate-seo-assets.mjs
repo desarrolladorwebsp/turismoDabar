@@ -6,9 +6,9 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 
-const heroPath = join(root, "public/images/hero/patagonia-group.png");
+const heroPath = join(root, "public/images/hero/rafting-rapidos.jpg");
 const logoPath = join(root, "public/images/logo-turismo-dabar.png");
-const ogOut = join(root, "public/images/og-image.png");
+const ogOut = join(root, "public/images/og-image.jpg");
 const iconOut = join(root, "src/app/icon.png");
 const appleIconOut = join(root, "src/app/apple-icon.png");
 const favicon32Out = join(root, ".tmp-favicon-32.png");
@@ -18,8 +18,8 @@ const OG_HEIGHT = 630;
 
 async function generateOgImage() {
   const background = await sharp(heroPath)
-    .resize(OG_WIDTH, OG_HEIGHT, { fit: "cover", position: "centre" })
-    .modulate({ brightness: 0.82, saturation: 1.05 })
+    .resize(OG_WIDTH, OG_HEIGHT, { fit: "cover", position: "right" })
+    .modulate({ brightness: 0.88, saturation: 1.08 })
     .toBuffer();
 
   const logo = await sharp(logoPath)
@@ -57,7 +57,7 @@ async function generateOgImage() {
       { input: overlaySvg, top: 0, left: 0 },
       { input: logo, top: 72, left: 72 },
     ])
-    .png({ compressionLevel: 9 })
+    .jpeg({ quality: 88, mozjpeg: true })
     .toFile(ogOut);
 }
 

@@ -5,8 +5,13 @@ import {
   WHATSAPP_DISPLAY,
   WHATSAPP_NUMBER,
 } from "@/lib/contact";
+import {
+  SEO_FAQ_ITEMS,
+  TRAVEL_PRODUCTS,
+  type TravelProduct,
+} from "@/lib/travel-products";
 
-export const SITE_URL = "https://www.turismodabar.cl";
+export const SITE_URL = "https://turismodabar.cl";
 
 export const SITE_NAME = "Turismo Dabar";
 
@@ -16,23 +21,27 @@ export const SEO_KEYWORDS = [
   "turismo dabar",
   "bariloche todo incluido",
   "giras de estudio bariloche",
-  "viajes adulto mayor chile",
+  "gira sur de chile escolar",
   "viajes escolares todo incluido",
+  "gira bariloche terrestre",
+  "gira bariloche aereo",
 ] as const;
 
 export const SEO_DEFAULT_TITLE =
-  "Turismo Dabar | Giras de Estudio y Viajes Grupales en Chile";
+  "Turismo Dabar | Giras de Estudio y Viajes Grupales Todo Incluido";
 
 export const SEO_DESCRIPTION =
-  "Organizas la gira de estudios de tu curso? En Turismo Dabar diseñamos programas 100 por ciento todo incluido a Bariloche y el Sur de Chile con rafting, pensión completa, buses exclusivos, cobertura médica y soporte 24/7 en ruta.";
+  "Giras de estudio todo incluido desde $529.990: Sur de Chile (Siete Lagos y Lagos y Volcanes) y Bariloche terrestre o aéreo. Rafting, pensión completa, bus exclusivo, cobertura médica y soporte 24/7.";
 
 export const OG_TITLE =
-  "La Gira de Estudios que recordarán para toda la vida | Turismo Dabar";
+  "Giras de Estudio Todo Incluido | Bariloche y Sur de Chile | Turismo Dabar";
 
 export const OG_DESCRIPTION =
-  "Programas todo incluido a Bariloche y el Sur de Chile. Diversión, seguridad y soporte 24/7 en ruta.";
+  "Cuatro programas para cursos: Sur de Chile desde $529.990 y Bariloche desde $1.195.990. Seguridad, logística completa y aventura inolvidable.";
 
-export const OG_IMAGE_PATH = "/images/og-image.png";
+export const OG_IMAGE_PATH = "/images/og-image.jpg";
+
+export const OG_IMAGE_URL = `${SITE_URL}${OG_IMAGE_PATH}`;
 
 export const OG_IMAGE_WIDTH = 1200;
 
@@ -45,6 +54,13 @@ export const OFFICE_ADDRESS = {
   postalCode: "7500000",
   addressCountry: "CL",
 } as const;
+
+export const SITE_NAV_LINKS = [
+  { name: "Inicio", path: "/" },
+  { name: "Giras de Estudio", path: "/planes" },
+  { name: "Experiencias", path: "/#experiencias" },
+  { name: "Cotizar", path: "/#cotizar" },
+] as const;
 
 export const siteMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -84,11 +100,12 @@ export const siteMetadata: Metadata = {
     description: OG_DESCRIPTION,
     images: [
       {
-        url: OG_IMAGE_PATH,
+        url: OG_IMAGE_URL,
+        secureUrl: OG_IMAGE_URL,
         width: OG_IMAGE_WIDTH,
         height: OG_IMAGE_HEIGHT,
-        alt: "Turismo Dabar — Giras de estudio todo incluido a Bariloche y el Sur de Chile",
-        type: "image/png",
+        alt: "Turismo Dabar — Rafting y giras de estudio todo incluido en Bariloche y Sur de Chile",
+        type: "image/jpeg",
       },
     ],
   },
@@ -96,9 +113,16 @@ export const siteMetadata: Metadata = {
     card: "summary_large_image",
     title: OG_TITLE,
     description: OG_DESCRIPTION,
-    images: [OG_IMAGE_PATH],
+    images: [OG_IMAGE_URL],
   },
   other: {
+    "og:image": OG_IMAGE_URL,
+    "og:image:secure_url": OG_IMAGE_URL,
+    "og:image:width": String(OG_IMAGE_WIDTH),
+    "og:image:height": String(OG_IMAGE_HEIGHT),
+    "og:image:alt":
+      "Turismo Dabar — Rafting y giras de estudio todo incluido en Bariloche y Sur de Chile",
+    "twitter:image": OG_IMAGE_URL,
     "contact:phone_number": WHATSAPP_NUMBER,
     "contact:email": CONTACT_EMAIL,
     "contact:whatsapp": WHATSAPP_DISPLAY,
@@ -107,7 +131,68 @@ export const siteMetadata: Metadata = {
   },
 };
 
+function buildProductSchema(product: TravelProduct) {
+  const url = `${SITE_URL}/planes/${product.slug}`;
+
+  return {
+    "@type": "Product",
+    "@id": `${url}#product`,
+    name: product.title,
+    description: product.seoDescription,
+    image: `${SITE_URL}${product.image}`,
+    url,
+    sku: product.slug,
+    brand: {
+      "@type": "Brand",
+      name: SITE_NAME,
+    },
+    category: "Giras de estudio",
+    offers: {
+      "@type": "Offer",
+      url,
+      priceCurrency: "CLP",
+      price: product.priceCLP,
+      availability: "https://schema.org/InStock",
+      priceValidUntil: `${new Date().getFullYear() + 1}-12-31`,
+      seller: {
+        "@id": `${SITE_URL}/#organization`,
+      },
+    },
+  };
+}
+
+export function getProductPageMetadata(product: TravelProduct): Metadata {
+  const title = `${product.shortTitle} — Gira Todo Incluido`;
+  const description = `${product.seoDescription} ${product.priceLabel}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `/planes/${product.slug}`,
+    },
+    openGraph: {
+      title: `${title} | ${SITE_NAME}`,
+      description,
+      url: `${SITE_URL}/planes/${product.slug}`,
+      images: [
+        {
+          url: product.image,
+          alt: product.imageAlt,
+        },
+      ],
+    },
+    twitter: {
+      title: `${title} | ${SITE_NAME}`,
+      description,
+      images: [product.image],
+    },
+  };
+}
+
 export function getOrganizationJsonLd() {
+  const productNodes = TRAVEL_PRODUCTS.map(buildProductSchema);
+
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -154,6 +239,18 @@ export function getOrganizationJsonLd() {
         parentOrganization: {
           "@id": `${SITE_URL}/#organization`,
         },
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: "Giras de estudio todo incluido",
+          itemListElement: TRAVEL_PRODUCTS.map((product, index) => ({
+            "@type": "OfferCatalog",
+            position: index + 1,
+            name: product.shortTitle,
+            itemListElement: {
+              "@id": `${SITE_URL}/planes/${product.slug}#product`,
+            },
+          })),
+        },
       },
       {
         "@type": "WebSite",
@@ -164,6 +261,117 @@ export function getOrganizationJsonLd() {
         inLanguage: "es-CL",
         publisher: {
           "@id": `${SITE_URL}/#organization`,
+        },
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${SITE_URL}/#webpage`,
+        url: SITE_URL,
+        name: SEO_DEFAULT_TITLE,
+        description: SEO_DESCRIPTION,
+        isPartOf: {
+          "@id": `${SITE_URL}/#website`,
+        },
+        about: {
+          "@id": `${SITE_URL}/#localbusiness`,
+        },
+        inLanguage: "es-CL",
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${SITE_URL}/#planes`,
+        name: "Giras de estudio Turismo Dabar",
+        itemListElement: TRAVEL_PRODUCTS.map((product, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: product.title,
+          url: `${SITE_URL}/planes/${product.slug}`,
+          item: {
+            "@id": `${SITE_URL}/planes/${product.slug}#product`,
+          },
+        })),
+      },
+      ...SITE_NAV_LINKS.map((link) => ({
+        "@type": "SiteNavigationElement",
+        name: link.name,
+        url: `${SITE_URL}${link.path === "/" ? "" : link.path}`,
+      })),
+      {
+        "@type": "FAQPage",
+        "@id": `${SITE_URL}/#faq`,
+        mainEntity: SEO_FAQ_ITEMS.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.answer,
+          },
+        })),
+      },
+      ...productNodes,
+    ],
+  };
+}
+
+export function getProductPageJsonLd(product: TravelProduct) {
+  const url = `${SITE_URL}/planes/${product.slug}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: product.title,
+        description: product.seoDescription,
+        isPartOf: {
+          "@id": `${SITE_URL}/#website`,
+        },
+        inLanguage: "es-CL",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Inicio",
+            item: SITE_URL,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Giras de Estudio",
+            item: `${SITE_URL}/planes`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: product.shortTitle,
+            item: url,
+          },
+        ],
+      },
+      buildProductSchema(product),
+      {
+        "@type": "TouristTrip",
+        name: product.title,
+        description: product.description,
+        touristType: "Estudiantes",
+        itinerary: {
+          "@type": "ItemList",
+          itemListElement: product.destinations.map((destination, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: destination,
+          })),
+        },
+        offers: {
+          "@type": "Offer",
+          price: product.priceCLP,
+          priceCurrency: "CLP",
+          url,
         },
       },
     ],

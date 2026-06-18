@@ -1,7 +1,11 @@
 import { getOrganizationJsonLd } from "@/lib/seo";
 
-export function JsonLd() {
-  const schema = getOrganizationJsonLd();
+interface JsonLdProps {
+  data?: Record<string, unknown>;
+}
+
+export function JsonLd({ data }: JsonLdProps) {
+  const schema = data ?? getOrganizationJsonLd();
 
   return (
     <script

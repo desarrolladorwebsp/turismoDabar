@@ -28,6 +28,7 @@ export type TravelYearOption = (typeof TRAVEL_YEAR_OPTIONS)[number];
 export const COTIZAR_SCROLL_EVENT = "turismodabar:cotizar-scroll";
 export const COTIZAR_FORM_ID = "cotizar-form";
 export const COTIZAR_SECTION_ID = "cotizar";
+export const COTIZAR_DEST_PARAM = "cotizar_dest";
 
 export interface CotizarScrollDetail {
   destination?: QuoteDestination;
@@ -51,6 +52,16 @@ function scrollToQuoteForm() {
 
 /** Scroll suave al formulario centrado + pre-selección opcional de destino */
 export function scrollToCotizar(destination?: QuoteDestination) {
+  if (typeof window !== "undefined" && window.location.pathname !== "/") {
+    const url = new URL("/", window.location.origin);
+    url.hash = COTIZAR_SECTION_ID;
+    if (destination) {
+      url.searchParams.set(COTIZAR_DEST_PARAM, destination);
+    }
+    window.location.assign(url.toString());
+    return;
+  }
+
   if (typeof window !== "undefined") {
     window.dispatchEvent(
       new CustomEvent<CotizarScrollDetail>(COTIZAR_SCROLL_EVENT, {

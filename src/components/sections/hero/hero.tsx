@@ -4,21 +4,18 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { SernaturBadge } from "@/components/ui/sernatur-badge";
 import { scrollToCotizar } from "@/lib/quote";
 import { organicSpring, staggerContainer, fadeUpItem } from "@/lib/motion";
 
 const IMAGES = [
   {
-    src: "/images/hero/patagonia-group.png",
-    alt: "Grupo de giras de estudio sonriendo en las Torres del Paine, Patagonia, Chile",
+    src: "/images/hero/rafting-rapidos.jpg",
+    alt: "Grupo de estudiantes haciendo rafting en rápidos con cascadas y equipo de seguridad",
   },
   {
-    src: "/images/hero/atacama-group.png",
-    alt: "Grupo de adultos mayores disfrutando del atardecer en el Valle de la Luna, Atacama, Chile",
-  },
-  {
-    src: "/images/hero/vineyard-group.png",
-    alt: "Grupo de excursionistas compartiendo en un viñedo con la Cordillera de los Andes de fondo, Chile",
+    src: "/images/hero/grupo-rafting.jpg",
+    alt: "Grupo de estudiantes con cascos y chalecos de rafting posando en plena naturaleza",
   },
 ] as const;
 
@@ -113,6 +110,10 @@ function HeroContent() {
           Chile. Todos nuestros viajes incluyen Rafting, pensión completa, buses
           exclusivos, cobertura médica y soporte 24/7 en ruta.
         </motion.p>
+
+        <motion.div variants={itemVariants} className="mt-5 sm:mt-6">
+          <SernaturBadge variant="hero" />
+        </motion.div>
 
         <motion.div variants={itemVariants} className="mt-7 sm:mt-8">
           <Button
