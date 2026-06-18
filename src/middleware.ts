@@ -10,7 +10,7 @@ const ALLOWED_EXACT = new Set([
   "/apple-icon.png",
 ]);
 
-const ALLOWED_PREFIXES = ["/_next", "/images", "/videos", "/api"];
+const ALLOWED_PREFIXES = ["/_next", "/images", "/api"];
 
 function isAllowedPath(pathname: string) {
   if (ALLOWED_EXACT.has(pathname)) return true;

@@ -39,3 +39,19 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Videos — servidos desde media.turismodabar.cl (no van al repo)
+/public/videos/
+
+# Paquetes zip de deploy manual (cPanel)
+*.zip
+
+# Frames temporales al generar posters de video
+.tmp-frames/
+
+# Originales HEIC (en web se usan los .jpg)
+*.heic
+*.HEIC
+
+# Capturas locales de desarrollo
+.screenshots/

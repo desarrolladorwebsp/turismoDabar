@@ -1,3 +1,5 @@
+import { mediaVideoUrl } from "@/lib/media";
+
 export type ExperienceMediaType = "photo" | "video";
 
 export interface ExperienceGridPlacement {
@@ -42,7 +44,7 @@ export const EXPERIENCE_GALLERY: ExperienceGalleryItem[] = [
     description:
       "Así se vive la preparación y la energía de una jornada de rafting con Turismo Dabar.",
     caption: "Video · Sur de Chile",
-    src: "/videos/experiencias/video-rafting-sur.mp4",
+    src: mediaVideoUrl("video-rafting-sur.mp4"),
     poster: "/images/experiencias/posters/video-rafting-sur.jpg",
     alt: "Video de rafting en el Sur de Chile con Turismo Dabar",
     objectPosition: "center center",
@@ -82,7 +84,7 @@ export const EXPERIENCE_GALLERY: ExperienceGalleryItem[] = [
     description:
       "Lagos, volcanes y el equipo Dabar acompañando cada experiencia en ruta.",
     caption: "Video · Lagos del Sur",
-    src: "/videos/experiencias/video-lago-volcan.mp4",
+    src: mediaVideoUrl("video-lago-volcan.mp4"),
     poster: "/images/experiencias/posters/video-lago-volcan.jpg",
     alt: "Video con vista al lago y volcán en el Sur de Chile",
     objectPosition: "center center",
@@ -122,7 +124,7 @@ export const EXPERIENCE_GALLERY: ExperienceGalleryItem[] = [
     description:
       "Más allá de las excursiones: momentos de integración, risas y la magia de compartir en grupo.",
     caption: "Video · Momentos del viaje",
-    src: "/videos/experiencias/video-noche-grupo.mp4",
+    src: mediaVideoUrl("video-noche-grupo.mp4"),
     poster: "/images/experiencias/posters/video-noche-grupo.jpg",
     alt: "Video de integración y diversión nocturna del grupo",
     objectPosition: "center center",
