@@ -19,6 +19,11 @@ export function buildClientConfirmationEmail(
 Gracias por contactar a Turismo Dabar. Recibimos tu solicitud de cotización para el curso ${data.course} de ${data.school}.
 
 Resumen de tu solicitud:
+- Coordinador: ${data.fullName}
+- WhatsApp: ${data.phone}
+- Correo: ${data.email}
+- Colegio: ${data.school}
+- Curso: ${data.course}
 - Destino: ${data.destination}
 - Cantidad de alumnos: ${data.studentCount}
 - Fecha estimada: ${data.travelYear}
@@ -63,6 +68,9 @@ ${SITE_URL}`;
                 <tr>
                   <td style="padding:20px 22px;">
                     <p style="margin:0 0 14px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:${EMAIL_THEME.navy};font-weight:700;">Resumen de tu solicitud</p>
+                    <p style="margin:0 0 10px;font-size:14px;line-height:1.5;color:${EMAIL_THEME.stone};"><strong>Coordinador:</strong> ${escapeHtml(data.fullName)}</p>
+                    <p style="margin:0 0 10px;font-size:14px;line-height:1.5;color:${EMAIL_THEME.stone};"><strong>WhatsApp:</strong> ${escapeHtml(data.phone)}</p>
+                    <p style="margin:0 0 10px;font-size:14px;line-height:1.5;color:${EMAIL_THEME.stone};"><strong>Correo:</strong> ${escapeHtml(data.email)}</p>
                     <p style="margin:0 0 10px;font-size:14px;line-height:1.5;color:${EMAIL_THEME.stone};"><strong>Colegio:</strong> ${escapeHtml(data.school)}</p>
                     <p style="margin:0 0 10px;font-size:14px;line-height:1.5;color:${EMAIL_THEME.stone};"><strong>Curso:</strong> ${escapeHtml(data.course)}</p>
                     <p style="margin:0 0 10px;font-size:14px;line-height:1.5;color:${EMAIL_THEME.stone};"><strong>Destino:</strong> ${escapeHtml(data.destination)}</p>

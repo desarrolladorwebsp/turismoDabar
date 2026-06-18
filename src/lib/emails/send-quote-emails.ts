@@ -1,37 +1,31 @@
 import { Resend } from "resend";
 import { CONTACT_EMAIL } from "@/lib/contact";
+import {
+  getResendApiKey,
+  getResendFromAddress,
+  getResendNotifyEmail,
+} from "@/lib/emails/config";
 import { buildClientConfirmationEmail } from "@/lib/emails/templates/client-confirmation";
 import { buildInternalNotificationEmail } from "@/lib/emails/templates/internal-notification";
 import type { QuoteSubmissionPayload } from "@/lib/emails/types";
 
-function getResendClient() {
-  const apiKey = process.env.RESEND_API_KEY;
-
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY no está configurada.");
-  }
-
-  return new Resend(apiKey);
-}
-
-function getFromAddress() {
-  return (
-    process.env.RESEND_FROM_EMAIL?.trim() ||
-    "Turismo Dabar <onboarding@resend.dev>"
-  );
-}
-
+/**
+ * Envía dos correos por cada solicitud de cotización:
+ * 1. Notificación interna → experiencias@turismodabar.cl
+ * 2. Confirmación al cliente → correo del formulario
+ */
 export async function sendQuoteEmails(data: QuoteSubmissionPayload) {
-  const resend = getResendClient();
-  const from = getFromAddress();
+  const resend = new Resend(getResendApiKey());
+  const from = getResendFromAddress();
+  const notifyEmail = getResendNotifyEmail();
 
-  const internalEmail = buildInternalNotificationEmail(data);
+  const internalEmail = buildInternalNotificationEmail(data, notifyEmail);
   const clientEmail = buildClientConfirmationEmail(data);
 
   const [internalResult, clientResult] = await Promise.all([
     resend.emails.send({
       from,
-      to: [CONTACT_EMAIL],
+      to: [notifyEmail],
       replyTo: data.email,
       subject: internalEmail.subject,
       html: internalEmail.html,
@@ -48,11 +42,15 @@ export async function sendQuoteEmails(data: QuoteSubmissionPayload) {
   ]);
 
   if (internalResult.error) {
-    throw new Error(internalResult.error.message);
+    throw new Error(
+      `No se pudo enviar la notificación interna: ${internalResult.error.message}`
+    );
   }
 
   if (clientResult.error) {
-    throw new Error(clientResult.error.message);
+    throw new Error(
+      `No se pudo enviar la confirmación al cliente: ${clientResult.error.message}`
+    );
   }
 
   return {

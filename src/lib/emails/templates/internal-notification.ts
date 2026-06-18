@@ -3,7 +3,8 @@ import { EMAIL_THEME, escapeHtml } from "@/lib/emails/email-theme";
 import type { QuoteEmailContent, QuoteSubmissionPayload } from "@/lib/emails/types";
 
 export function buildInternalNotificationEmail(
-  data: QuoteSubmissionPayload
+  data: QuoteSubmissionPayload,
+  notifyEmail: string = CONTACT_EMAIL
 ): QuoteEmailContent {
   const subject = `[Nueva cotización] ${data.school} — ${data.course}`;
   const receivedAt = new Date().toLocaleString("es-CL", {
@@ -66,8 +67,16 @@ Responder a: ${data.email}`;
                 ${row("Fecha estimada", escapeHtml(data.travelYear))}
               </table>
 
+              <table role="presentation" cellspacing="0" cellpadding="0" style="margin-top:24px;">
+                <tr>
+                  <td style="border-radius:10px;background-color:${EMAIL_THEME.coral};">
+                    <a href="mailto:${escapeHtml(data.email)}?subject=${encodeURIComponent(`Cotización ${data.school} — ${data.course}`)}" style="display:inline-block;padding:13px 22px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none;">Responder al coordinador</a>
+                  </td>
+                </tr>
+              </table>
+
               <p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:${EMAIL_THEME.stoneMuted};">
-                Responde directamente a este correo para contactar al solicitante. Notificación enviada a ${CONTACT_EMAIL}.
+                Responde directamente a este correo para contactar al solicitante. Notificación enviada a ${escapeHtml(notifyEmail)}.
               </p>
             </td>
           </tr>

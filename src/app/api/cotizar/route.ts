@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
+import { logQuoteSubmissionFailure } from "@/lib/emails/quote-failure-log";
 import { sendQuoteEmails } from "@/lib/emails/send-quote-emails";
 import { validateQuoteSubmission } from "@/lib/emails/validate-quote";
+import type { QuoteSubmissionPayload } from "@/lib/emails/types";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  let validatedData: QuoteSubmissionPayload | null = null;
+
   try {
     const body = await request.json();
     const validation = validateQuoteSubmission(body);
@@ -13,10 +17,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    await sendQuoteEmails(validation.data);
+    validatedData = validation.data;
+    const result = await sendQuoteEmails(validatedData);
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({
+      ok: true,
+      internalEmailId: result.internalId,
+      clientEmailId: result.clientId,
+    });
   } catch (error) {
+    if (validatedData) {
+      logQuoteSubmissionFailure(validatedData, error);
+    }
+
     console.error("[cotizar] Error al enviar correos:", error);
 
     const message =
