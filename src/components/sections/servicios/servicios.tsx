@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -23,6 +22,7 @@ import {
   type DestinationRegion,
 } from "@/components/ui/destination-flag-badge";
 import { TripHighlights } from "@/components/sections/servicios/trip-highlights";
+import { ProductCardGallery } from "@/components/sections/servicios/product-card-gallery";
 
 const TRUST_BADGES = [
   {
@@ -71,16 +71,7 @@ function ProductCard({
       className="group relative flex flex-col overflow-visible rounded-2xl border border-stone-200 bg-white transition-colors duration-300 hover:border-brand-blue-200/60"
     >
       <div className="relative shrink-0">
-        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-2xl">
-          <Image
-            src={product.image}
-            alt={product.imageAlt}
-            fill
-            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-blue-950/60 via-transparent to-transparent" />
-        </div>
+        <ProductCardGallery images={product.gallery} />
 
         <DestinationFlagBadge
           region={product.region}
@@ -104,7 +95,11 @@ function ProductCard({
               key={dest}
               className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1 text-[11px] font-medium text-stone-700 ring-1 ring-stone-200/80"
             >
-              <MapPin size={11} weight="fill" className="text-brand-coral-400" />
+              <MapPin
+                size={11}
+                weight="fill"
+                className="text-brand-coral-400"
+              />
               {dest}
             </span>
           ))}
@@ -164,8 +159,7 @@ export function Servicios() {
           </span>
 
           <h2 className="mb-4 text-3xl font-bold leading-[1.1] tracking-tight text-stone-900 sm:text-4xl md:text-[2.75rem]">
-            Viajes Escolares{" "}
-            <span className="text-brand-blue-600">Todo Incluido</span>
+            Viajes <span className="text-brand-blue-600">Todo Incluido</span>
           </h2>
 
           <p className="mx-auto max-w-[50ch] text-base leading-relaxed text-stone-500 md:text-lg">
@@ -237,7 +231,7 @@ export function Servicios() {
             type="button"
             onClick={() =>
               scrollToCotizar(
-                "Aún no decidimos, queremos evaluar las opciones en la reunión de apoderados"
+                "Aún no decidimos, queremos evaluar las opciones en la reunión de apoderados",
               )
             }
             className="cursor-pointer font-semibold text-brand-coral-500 underline underline-offset-2 transition-colors hover:text-brand-coral-600"

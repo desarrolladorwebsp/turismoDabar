@@ -76,7 +76,7 @@ function FormBackgroundPhoto() {
   return (
     <div className="absolute inset-0" aria-hidden>
       <Image
-        src="/images/servicios/bariloche-premium.png"
+        src="/images/destinos/sur-chile/ruta-siete-lagos-carretera.png"
         alt=""
         fill
         priority={false}
